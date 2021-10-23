@@ -8,6 +8,7 @@ defmodule Scratch.Accounts.User do
     field :email, :string
     field :password, :string
     field :username, :string
+    field :roles, {:array, :string}, default: ["user"]
     field :password_one, :string, virtual: true
     field :password_two, :string, virtual: true
     timestamps()
