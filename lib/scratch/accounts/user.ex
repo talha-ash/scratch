@@ -7,6 +7,7 @@ defmodule Scratch.Accounts.User do
     field :age, :integer
     field :email, :string
     field :password, :string
+    field :fullname, :string
     field :username, :string
     field :roles, {:array, :string}, default: ["user"]
     field :password_one, :string, virtual: true
@@ -17,8 +18,8 @@ defmodule Scratch.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :age, :email, :password])
-    |> validate_required([:username, :age, :email, :password])
+    |> cast(attrs, [:username, :age, :email, :password, :fullname])
+    |> validate_required([:username, :age, :email, :password, :fullname])
     |> unique_constraint(:email)
   end
 

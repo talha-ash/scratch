@@ -7,7 +7,6 @@ defmodule ScratchWeb.Resolvers.Auth do
       {:ok, %{token: token, user: user}}
     else
       {:error, message} ->
-        IO.inspect(message)
         {:error, message}
     end
   end
