@@ -5,6 +5,7 @@ defmodule Scratch.Repo.Migrations.AddTableUsers do
     create table(:users) do
       add(:username, :string)
       add(:age, :integer)
+      add(:fullname, :string)
       add(:email, :string)
       add(:password, :string)
       add(:roles, {:array, :string})
