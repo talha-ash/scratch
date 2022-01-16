@@ -2,8 +2,8 @@ defmodule Scratch.Repo.Migrations.AddTableCookStep do
   use Ecto.Migration
 
   def change do
-    create table(:cook_steps) do
-      add(:step, :string)
+    create table(:cooking_steps) do
+      add(:step, :integer)
       add(:description, :string)
       add(:video_url, :string)
       add(:video_title, :string)
@@ -11,6 +11,6 @@ defmodule Scratch.Repo.Migrations.AddTableCookStep do
       timestamps()
     end
 
-    create(index(:cook_steps, [:recipe_id]))
+    create(index(:cooking_steps, [:recipe_id]))
   end
 end

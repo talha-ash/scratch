@@ -31,6 +31,8 @@ config :scratch, Scratch.Guardian,
        issuer: "scratch",
        secret_key: "sfI/s0TKVuSDl8ziwCsz+Y58sRo4tNklv4OFCduIIo03ROZJht+nrlDecl4OCN2o"
 
+config :waffle, storage: Waffle.Storage.Local
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

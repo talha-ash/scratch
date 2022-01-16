@@ -47,7 +47,9 @@ defmodule Scratch.MixProject do
       {:bcrypt_elixir, "~> 2.0"},
       {:absinthe, "~> 1.5"},
       {:absinthe_plug, "~> 1.5"},
-      {:absinthe_error_payload, "~> 1.0"}
+      {:crudry, "~> 2.4.0"},
+      {:waffle, "~> 1.1"},
+      {:waffle_ecto, "~> 0.0"}
     ]
   end
 
