@@ -15,25 +15,46 @@ defmodule Scratch.Accounts.User do
     timestamps()
   end
 
+  @required ~w(username  email password fullname)a
+  @optional ~w(age)a
+  @allowed @required ++ @optional
+
+  @registration_required ~w(username email password_one password_two)a
+  @registration_optional ~w(age)a
+  @registration_allowed @registration_required ++ @registration_optional
+
   @doc false
-  def changeset(user, attrs) do
+  def changeset(%__MODULE__{} = user, attrs) do
     user
-    |> cast(attrs, [:username, :age, :email, :password, :fullname])
-    |> validate_required([:username, :age, :email, :password, :fullname])
+    |> cast(attrs, @allowed)
+    |> validate_required(@required)
     |> unique_constraint(:email)
   end
 
   @doc false
-  def registration_changeset(user, attrs) do
+  def registration_changeset(%__MODULE__{} = user, attrs) do
+    IO.inspect(attrs)
+
     user
-    |> cast(attrs, [:username, :age, :email, :password_one, :password_two])
-    |> validate_required([:username, :email, :password_one, :password_two])
+    |> cast(attrs, @registration_allowed)
+    |> validate_required(@registration_required)
     |> validate_format(:email, ~r/@/)
     |> validate_length(:password_one, min: 3)
     |> validate_length(:password_two, min: 3)
+    |> compare_password
     |> put_password_hash
     |> unique_constraint(:email)
     |> unique_constraint(:username)
+  end
+
+  defp compare_password(changeset) do
+    cond do
+      get_change(changeset, :password_one) == get_change(changeset, :password_two) ->
+        changeset
+
+      true ->
+        add_error(changeset, :password_match, "password not match")
+    end
   end
 
   defp put_password_hash(changeset) do
