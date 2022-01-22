@@ -6,29 +6,34 @@ defmodule Scratch.Recipes.RecipeImage do
   alias Scratch.Recipes.Recipe
 
   schema "recipe_images" do
-    field :image_url, Scratch.FileImage.Type
+    field :image, Scratch.FileImage.Type
     belongs_to :recipe, Recipe, foreign_key: :recipe_id
     timestamps()
   end
 
-  @required ~w(image_url recipe_id)a
+  @required ~w(image recipe_id)a
   @optional ~w()a
   @allowed @required ++ @optional
 
   @doc false
   def changeset(%__MODULE__{} = recipe_image, attrs) do
     recipe_image
-    |> cast_attachments(attrs, [:image_url])
+    |> cast_attachments(attrs, [:image], allow_urls: true)
     |> validate_required(@required)
     |> foreign_key_constraint(:recipe_id)
   end
 
-  def new_changeset(%__MODULE__{} = recipe_image, attrs \\ %{}) do
-    IO.inspect("[[][][]][][")
-    IO.inspect(attrs)
+  def new_changeset(%__MODULE__{} = recipe_image, attrs \\ %{}, %{recipe_id: recipe_id}) do
+    Map.put(recipe_image, :scope_id, recipe_id)
+    |> cast_attachments(attrs, [:image], allow_urls: true)
+    |> validate_required([:image])
+  end
 
-    recipe_image
-    |> cast_attachments(attrs, [:image_url])
-    |> validate_required([:image_url])
+  def cast_assoc_recipe(changeset, recipe_id) do
+    changeset
+    |> cast_assoc(:recipe_images,
+      required: true,
+      with: {Scratch.Recipes.RecipeImage, :new_changeset, [%{recipe_id: recipe_id}]}
+    )
   end
 end

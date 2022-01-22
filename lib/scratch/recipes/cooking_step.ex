@@ -30,4 +30,9 @@ defmodule Scratch.Recipes.CookingStep do
     |> cast(attrs, [:step, :description, :video_url, :video_title])
     |> validate_required([:step, :description])
   end
+
+  def cast_assoc_recipe(changeset) do
+    changeset
+    |> cast_assoc(:cooking_steps, required: true, with: &new_changeset/2)
+  end
 end

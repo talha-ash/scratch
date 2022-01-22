@@ -27,8 +27,13 @@ defmodule Scratch.Recipes.Recipe do
     |> cast(attrs, @allowed)
     |> validate_required(@required)
     |> foreign_key_constraint(:user_id)
-    |> cast_assoc(:ingredients, required: true, with: &Ingredient.new_changeset/2)
-    |> cast_assoc(:cooking_steps, required: true, with: &CookingStep.new_changeset/2)
-    |> cast_assoc(:recipe_images, required: true, with: &RecipeImage.new_changeset/2)
+  end
+
+  def associated_changeset(%__MODULE__{} = recipe, attrs) do
+    recipe
+    |> cast(attrs, @allowed)
+    |> Ingredient.cast_assoc_recipe(recipe.id)
+    |> CookingStep.cast_assoc_recipe()
+    |> RecipeImage.cast_assoc_recipe(recipe.id)
   end
 end

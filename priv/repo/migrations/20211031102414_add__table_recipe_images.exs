@@ -3,7 +3,7 @@ defmodule Scratch.Repo.Migrations.AddTableRecipeImages do
 
   def change do
     create table(:recipe_images) do
-      add(:image_url, :string)
+      add(:image, :string)
       add(:recipe_id, references("recipes"))
       timestamps()
     end

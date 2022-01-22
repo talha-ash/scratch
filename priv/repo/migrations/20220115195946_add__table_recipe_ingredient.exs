@@ -4,7 +4,7 @@ defmodule Scratch.Repo.Migrations.AddTableRecipeIngredient do
   def change do
     create table(:ingredients) do
       add(:description, :string)
-      add(:image_url, :string)
+      add(:image, :string)
       add(:recipe_id, references("recipes"))
       timestamps()
     end
