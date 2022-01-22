@@ -33,8 +33,6 @@ defmodule Scratch.Accounts.User do
 
   @doc false
   def registration_changeset(%__MODULE__{} = user, attrs) do
-    IO.inspect(attrs)
-
     user
     |> cast(attrs, @registration_allowed)
     |> validate_required(@registration_required)

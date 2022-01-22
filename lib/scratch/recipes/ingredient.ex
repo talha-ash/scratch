@@ -1,18 +1,19 @@
 defmodule Scratch.Recipes.Ingredient do
   use Ecto.Schema
-  import Ecto.Changeset
+  use Waffle.Ecto.Schema
 
+  import Ecto.Changeset
   alias Scratch.Recipes.Recipe
 
   schema "ingredients" do
     field :description, :string
-    field :image_url, :string
+    field :image, Scratch.FileImage.Type
     belongs_to :recipe, Recipe, foreign_key: :recipe_id
     timestamps()
   end
 
   @required ~w(description recipe_id)a
-  @optional ~w(image_url)a
+  @optional ~w(image)a
   @allowed @required ++ @optional
 
   @doc false
@@ -23,9 +24,27 @@ defmodule Scratch.Recipes.Ingredient do
     |> foreign_key_constraint(:recipe_id)
   end
 
-  def new_changeset(%__MODULE__{} = ingredient, attrs \\ %{}) do
-    ingredient
-    |> cast(attrs, [:description, :image_url])
+  def new_changeset(%__MODULE__{} = ingredient, attrs \\ %{}, %{recipe_id: recipe_id}) do
+    Map.put(ingredient, :scope_id, recipe_id)
+    |> cast(attrs, [:description])
+    |> cast_attachments(attrs, [:image])
     |> validate_required([:description])
+  end
+
+  def cast_assoc_recipe(changeset, attrs, recipe_id) do
+    changeset
+    |> cast(attrs, [])
+    |> cast_assoc(:ingredients,
+      required: true,
+      with: {Scratch.Recipes.Ingredient, :new_changeset, [%{recipe_id: recipe_id}]}
+    )
+  end
+
+  def cast_assoc_recipe(changeset, recipe_id) do
+    changeset
+    |> cast_assoc(:ingredients,
+      required: true,
+      with: {Scratch.Recipes.Ingredient, :new_changeset, [%{recipe_id: recipe_id}]}
+    )
   end
 end

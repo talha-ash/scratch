@@ -1,8 +1,6 @@
 defmodule Scratch.FileImage do
   use Waffle.Definition
   use Waffle.Ecto.Definition
-  # Include ecto support (requires package waffle_ecto installed):
-  # use Waffle.Ecto.Definition
 
   @versions [:original]
 
@@ -36,8 +34,7 @@ defmodule Scratch.FileImage do
 
   # Override the storage directory:
   def storage_dir(version, {file, scope}) do
-    IO.inspect(scope, label: "SCOpeeeee")
-    "uploads/recipe/#{scope.id}"
+    "uploads/recipe/#{scope.scope_id}"
   end
 
   # Provide a default URL if there hasn't been a file uploaded

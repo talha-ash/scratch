@@ -12,6 +12,7 @@ defmodule ScratchWeb.Schema do
 
   query do
     import_fields(:user_queries)
+    import_fields(:recipe_queries)
   end
 
   def middleware(middleware, _field, %Absinthe.Type.Object{identifier: identifier})
