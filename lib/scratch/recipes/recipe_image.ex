@@ -29,11 +29,20 @@ defmodule Scratch.Recipes.RecipeImage do
     |> validate_required([:image])
   end
 
-  def cast_assoc_recipe(changeset, recipe_id) do
+  def cast_assoc_with_recipe(changeset, attrs, recipe_id) do
+    changeset
+    |> cast(attrs, [])
+    |> cast_assoc(:recipe_images,
+      required: true,
+      with: {__MODULE__, :new_changeset, [%{recipe_id: recipe_id}]}
+    )
+  end
+
+  def cast_assoc_with_recipe(changeset, recipe_id) do
     changeset
     |> cast_assoc(:recipe_images,
       required: true,
-      with: {Scratch.Recipes.RecipeImage, :new_changeset, [%{recipe_id: recipe_id}]}
+      with: {__MODULE__, :new_changeset, [%{recipe_id: recipe_id}]}
     )
   end
 end

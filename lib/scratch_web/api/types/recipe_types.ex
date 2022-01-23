@@ -16,9 +16,9 @@ defmodule ScratchWeb.Types.RecipeType do
     end
 
     @desc "Update Recipe Images"
-    field :update_recipe_images, :create_recipe_success do
+    field :update_recipe_images, :update_recipe_images_success do
       arg(:id, non_null(:id))
-      arg(:recipe_images, list_of(:recipe_image_input))
+      arg(:recipe_images, non_null(list_of(:recipe_image_input)))
       resolve(&Recipe.update_recipe_images/3)
     end
 
@@ -52,6 +52,7 @@ defmodule ScratchWeb.Types.RecipeType do
   end
 
   input_object :recipe_image_input do
+    field :id, :id
     field :image, :upload
   end
 
@@ -61,9 +62,14 @@ defmodule ScratchWeb.Types.RecipeType do
     field :name, :string
   end
 
-  @desc "Update Recipe Ingredient Successfull"
+  @desc "Update Recipe Ingredients Successfull"
   object :update_recipe_ingredients_success do
     field :ingredients, list_of(:ingredient)
+  end
+
+  @desc "Update Recipe Images Successfull"
+  object :update_recipe_images_success do
+    field :recipe_images, list_of(:recipe_image)
   end
 
   object :ingredient do

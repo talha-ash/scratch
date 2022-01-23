@@ -22,6 +22,16 @@ defmodule ScratchWeb.Resolvers.Recipe do
     end
   end
 
+  def update_recipe_images(_parent, args, %{context: %{current_user: _current_user}}) do
+    with {:ok, %Recipes.Recipe{} = recipe} <-
+           Recipes.update_recipe_images(args.id, Map.delete(args, :id)) do
+      {:ok, %{recipe_images: recipe.recipe_images}}
+    else
+      {:error, message} ->
+        {:error, message}
+    end
+  end
+
   def get_recipe(_parent, args, %{context: %{current_user: current_user}}) do
     args = Map.put(args, :user_id, current_user.id)
 
