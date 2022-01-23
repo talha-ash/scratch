@@ -32,8 +32,8 @@ defmodule Scratch.Recipes.Recipe do
   def associated_changeset(%__MODULE__{} = recipe, attrs) do
     recipe
     |> cast(attrs, @allowed)
-    |> Ingredient.cast_assoc_recipe(recipe.id)
-    |> CookingStep.cast_assoc_recipe()
-    |> RecipeImage.cast_assoc_recipe(recipe.id)
+    |> Ingredient.cast_assoc_with_recipe(recipe.id)
+    |> CookingStep.cast_assoc_with_recipe()
+    |> RecipeImage.cast_assoc_with_recipe(recipe.id)
   end
 end

@@ -14,3 +14,22 @@ curl -X POST \
 -F nft=@nft.jpg \
 -F jump=@jump.jpeg \
 localhost:4000/api/v1
+
+#if id not exist it will enter as new record scenario
+curl -X POST \ 
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJzY3JhdGNoIiwiZXhwIjoxNjQ1MjY4OTM3LCJpYXQiOjE2NDI4NDk3MzcsImlzcyI6InNjcmF0Y2giLCJqdGkiOiI1YjZmNDdhNC1jYjBhLTQwZWYtOTRmZC05YWQyNTg0NjdjZTgiLCJuYmYiOjE2NDI4NDk3MzYsInN1YiI6IjEiLCJ0eXAiOiJhY2Nlc3MifQ.ltZGECFwhUC7eZTtjvaIqfw3OLutdZLOFEcsVMRZNYZW-XojuxsTaSaB3rIK5N1yxjiHDTkxqh4huFuS4i9QBg' \
+-F query="mutation { updateRecipeIngredients(id: 15, ingredients:[{description: \"Hell Kell\", image: \"wave\", id: 3},{description: \"Nice World\", image: \"wave\", id: 4}]) {ingredients{description, imageUrl}}}" \
+-F wave=@wave.png \
+-F nft=@nft.jpg \
+-F jump=@jump.jpeg \
+localhost:4000/api/v1
+
+
+######Update Recipe Images
+curl -X POST \ 
+--header 'Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJzY3JhdGNoIiwiZXhwIjoxNjQ1MjY4OTM3LCJpYXQiOjE2NDI4NDk3MzcsImlzcyI6InNjcmF0Y2giLCJqdGkiOiI1YjZmNDdhNC1jYjBhLTQwZWYtOTRmZC05YWQyNTg0NjdjZTgiLCJuYmYiOjE2NDI4NDk3MzYsInN1YiI6IjEiLCJ0eXAiOiJhY2Nlc3MifQ.ltZGECFwhUC7eZTtjvaIqfw3OLutdZLOFEcsVMRZNYZW-XojuxsTaSaB3rIK5N1yxjiHDTkxqh4huFuS4i9QBg' \
+-F query="mutation { updateRecipeImages(id: 15, recipeImages:[{image: \"wave\", id: 3}]) {recipeImages{imageUrl}}}" \
+-F wave=@wave.png \
+-F nft=@nft.jpg \
+-F jump=@jump.jpeg \
+localhost:4000/api/v1

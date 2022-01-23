@@ -18,11 +18,11 @@ defmodule Scratch.Recipes do
   end
 
   def update_recipe_images(id, recipe_images \\ %{}) do
-    recipe_images = %{recipe_images: recipe_images}
+    recipe = get_recipe_by_id(id)
 
-    Repo.get(Recipe, id)
+    recipe
     |> Repo.preload(:recipe_images)
-    |> RecipeImage.cast_assoc_recipe(recipe_images)
+    |> RecipeImage.cast_assoc_with_recipe(recipe_images, recipe.id)
     |> Repo.update()
   end
 
@@ -31,13 +31,13 @@ defmodule Scratch.Recipes do
 
     recipe
     |> Repo.preload(:ingredients)
-    |> Ingredient.cast_assoc_recipe(ingredients, recipe.id)
+    |> Ingredient.cast_assoc_with_recipe(ingredients, recipe.id)
     |> Repo.update()
   end
 
   def get_recipe(id) do
     get_recipe_by_id(id)
-    |> Repo.preload([:cooking_steps, :ingredients, :recipe_images, :user])
+    |> Repo.preload([:cooking_steps, :ingredients, :recipe_images])
   end
 
   defp get_recipe_by_id(id) do
