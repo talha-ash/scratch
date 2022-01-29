@@ -6,7 +6,7 @@ defmodule Scratch.Recipes.RecipeImage do
   alias Scratch.Recipes.Recipe
 
   schema "recipe_images" do
-    field :image, Scratch.FileImage.Type
+    field :image, Scratch.MediaResourceManager.Type
     belongs_to :recipe, Recipe, foreign_key: :recipe_id
     timestamps()
   end

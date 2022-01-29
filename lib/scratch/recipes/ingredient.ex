@@ -7,7 +7,7 @@ defmodule Scratch.Recipes.Ingredient do
 
   schema "ingredients" do
     field :description, :string
-    field :image, Scratch.FileImage.Type
+    field :image, Scratch.MediaResourceManager.Type
     belongs_to :recipe, Recipe, foreign_key: :recipe_id
     timestamps()
   end

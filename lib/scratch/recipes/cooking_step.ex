@@ -1,5 +1,7 @@
 defmodule Scratch.Recipes.CookingStep do
   use Ecto.Schema
+  use Waffle.Ecto.Schema
+
   import Ecto.Changeset
 
   alias Scratch.Recipes.Recipe
@@ -7,14 +9,14 @@ defmodule Scratch.Recipes.CookingStep do
   schema "cooking_steps" do
     field :step, :integer
     field :description, :string
-    field :video_url, :string
+    field :video, Scratch.MediaResourceManager.Type
     field :video_title, :string
     belongs_to :recipe, Recipe, foreign_key: :recipe_id
     timestamps()
   end
 
   @required ~w(step description recipe_id)a
-  @optional ~w(video_title video_url)a
+  @optional ~w(video_title video)a
   @allowed @required ++ @optional
 
   @doc false
@@ -25,14 +27,28 @@ defmodule Scratch.Recipes.CookingStep do
     |> foreign_key_constraint(:recipe_id)
   end
 
-  def new_changeset(%__MODULE__{} = cooking_step, attrs \\ %{}) do
-    cooking_step
-    |> cast(attrs, [:step, :description, :video_url, :video_title])
+  def new_changeset(%__MODULE__{} = cooking_step, attrs \\ %{}, %{recipe_id: recipe_id}) do
+
+    Map.put(cooking_step, :scope_id, recipe_id)
+    |> cast(attrs, [:step, :description, :video_title])
+    |> cast_attachments(attrs, [:video])
     |> validate_required([:step, :description])
   end
 
-  def cast_assoc_with_recipe(changeset) do
+  def cast_assoc_with_recipe(changeset, attrs, recipe_id) do
     changeset
-    |> cast_assoc(:cooking_steps, required: true, with: &new_changeset/2)
+    |> cast(attrs, [])
+    |> cast_assoc(:cooking_steps,
+      required: true,
+      with: {__MODULE__, :new_changeset, [%{recipe_id: recipe_id}]}
+    )
+  end
+
+  def cast_assoc_with_recipe(changeset, recipe_id) do
+    changeset
+    |> cast_assoc(:cooking_steps,
+      required: true,
+      with: {__MODULE__, :new_changeset, [%{recipe_id: recipe_id}]}
+    )
   end
 end

@@ -18,21 +18,50 @@ defmodule Scratch.Recipes do
   end
 
   def update_recipe_images(id, recipe_images \\ %{}) do
-    recipe = get_recipe_by_id(id)
+    with %Recipe{} = recipe <- get_recipe_by_id(id) do
+      recipe
+      |> Repo.preload(:recipe_images)
+      |> RecipeImage.cast_assoc_with_recipe(recipe_images, recipe.id)
+      |> Repo.update()
+    else
+      _ ->
+        {:error, "Recipe not found"}
+    end
+  end
 
-    recipe
-    |> Repo.preload(:recipe_images)
-    |> RecipeImage.cast_assoc_with_recipe(recipe_images, recipe.id)
-    |> Repo.update()
+  def update_recipe(attrs \\ %{}) do
+    with %Recipe{} = recipe <- get_recipe_by_id(attrs.id) do
+      recipe
+      |> Recipe.changeset(attrs)
+      |> Repo.update()
+    else
+      _ ->
+        {:error, "Recipe not found"}
+    end
+  end
+
+  def update_recipe_cooking_steps(id, cooking_steps \\ %{}) do
+    with %Recipe{} = recipe <- get_recipe_by_id(id) do
+      recipe
+      |> Repo.preload(:cooking_steps)
+      |> CookingStep.cast_assoc_with_recipe(cooking_steps, recipe.id)
+      |> Repo.update()
+    else
+      _ ->
+        {:error, "Recipe not found"}
+    end
   end
 
   def update_recipe_ingredients(id, ingredients \\ %{}) do
-    recipe = get_recipe_by_id(id)
-
-    recipe
-    |> Repo.preload(:ingredients)
-    |> Ingredient.cast_assoc_with_recipe(ingredients, recipe.id)
-    |> Repo.update()
+    with %Recipe{} = recipe <- get_recipe_by_id(id) do
+      recipe
+      |> Repo.preload(:ingredients)
+      |> Ingredient.cast_assoc_with_recipe(ingredients, recipe.id)
+      |> Repo.update()
+    else
+      _ ->
+        {:error, "Recipe not found"}
+    end
   end
 
   def get_recipe(id) do

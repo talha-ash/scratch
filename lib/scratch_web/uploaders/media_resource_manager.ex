@@ -1,4 +1,4 @@
-defmodule Scratch.FileImage do
+defmodule Scratch.MediaResourceManager do
   use Waffle.Definition
   use Waffle.Ecto.Definition
 
