@@ -5,7 +5,7 @@ defmodule Scratch.Repo.Migrations.AddTableCookStep do
     create table(:cooking_steps) do
       add(:step, :integer)
       add(:description, :string)
-      add(:video_url, :string)
+      add(:video, :string)
       add(:video_title, :string)
       add(:recipe_id, references("recipes"))
       timestamps()

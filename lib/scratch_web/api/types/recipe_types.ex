@@ -1,6 +1,6 @@
 defmodule ScratchWeb.Types.RecipeType do
   use Absinthe.Schema.Notation
-  alias ScratchWeb.Resolvers.Recipe
+  alias ScratchWeb.Resolvers.{Recipe, Helpers}
   import_types(Absinthe.Plug.Types)
 
   object :recipe_mutations do
@@ -15,6 +15,15 @@ defmodule ScratchWeb.Types.RecipeType do
       resolve(&Recipe.create_recipe/3)
     end
 
+    @desc "Update Recipe"
+    field :update_recipe, :create_recipe_success do
+      arg(:id, non_null(:id))
+      arg(:name, non_null(:string))
+      arg(:serve_time, non_null(:integer))
+      arg(:nutrition_facts, non_null(list_of(:string)))
+      resolve(&Recipe.update_recipe/3)
+    end
+
     @desc "Update Recipe Images"
     field :update_recipe_images, :update_recipe_images_success do
       arg(:id, non_null(:id))
@@ -27,6 +36,13 @@ defmodule ScratchWeb.Types.RecipeType do
       arg(:id, non_null(:id))
       arg(:ingredients, list_of(:ingredient_input))
       resolve(&Recipe.update_recipe_ingredients/3)
+    end
+
+    @desc "Update Recipe Cooking Steps"
+    field :update_recipe_cooking_steps, :update_recipe_cooking_steps_success do
+      arg(:id, non_null(:id))
+      arg(:cooking_steps, list_of(:cooking_step_input))
+      resolve(&Recipe.update_recipe_cooking_steps/3)
     end
   end
 
@@ -47,7 +63,7 @@ defmodule ScratchWeb.Types.RecipeType do
   input_object :cooking_step_input do
     field :step, non_null(:integer)
     field :description, non_null(:string)
-    field :video_url, :string
+    field :video, :upload
     field :video_title, :string
   end
 
@@ -60,6 +76,8 @@ defmodule ScratchWeb.Types.RecipeType do
   object :create_recipe_success do
     field :id, :integer
     field :name, :string
+    field :serve_time, :integer
+    field :nutrition_facts, :string
   end
 
   @desc "Update Recipe Ingredients Successfull"
@@ -67,37 +85,50 @@ defmodule ScratchWeb.Types.RecipeType do
     field :ingredients, list_of(:ingredient)
   end
 
+  @desc "Update Recipe Cooking Step Successfull"
+  object :update_recipe_cooking_steps_success do
+    field :cooking_steps, list_of(:cooking_step)
+  end
+
   @desc "Update Recipe Images Successfull"
   object :update_recipe_images_success do
     field :recipe_images, list_of(:recipe_image)
   end
 
+  # @desc "Update Recipe Images Successfull"
+  # object :update_recipe_success do
+  #   field :recipe_images, list_of(:recipe_image)
+  # end
+
   object :ingredient do
     field :description, :string
 
     field :image_url, :string do
-      resolve(&Recipe.resolve_images/3)
+      resolve(&Helpers.resolve_images/3)
     end
   end
 
   object :recipe_image do
     field :image_url, :string do
-      resolve(&Recipe.resolve_images/3)
+      resolve(&Helpers.resolve_images/3)
     end
   end
 
   object :cooking_step do
     field :step, :integer
     field :description, :string
-    field :video_url, :string
     field :video_title, :string
+
+    field :video_url, :string do
+      resolve(&Helpers.resolve_videos/3)
+    end
   end
 
   object :recipe do
     field :id, :id
     field :name, :string
     field :serve_time, :integer
-    field :nutrition_facts_url, :string
+    field :nutrition_facts, :string
     field :ingredients, list_of(:ingredient)
     field :cooking_steps, list_of(:cooking_step)
     field :recipe_images, list_of(:recipe_image)

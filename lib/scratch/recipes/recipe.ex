@@ -33,7 +33,7 @@ defmodule Scratch.Recipes.Recipe do
     recipe
     |> cast(attrs, @allowed)
     |> Ingredient.cast_assoc_with_recipe(recipe.id)
-    |> CookingStep.cast_assoc_with_recipe()
+    |> CookingStep.cast_assoc_with_recipe(recipe.id)
     |> RecipeImage.cast_assoc_with_recipe(recipe.id)
   end
 end
