@@ -1,9 +1,9 @@
 defmodule Scratch.Recipes do
   use Ecto.Schema
   import Ecto.Changeset
-
+  import Ecto.Query
   alias Scratch.Repo
-  alias Scratch.Recipes.{Recipe, CookingStep, RecipeImage, Ingredient}
+  alias Scratch.Recipes.{Recipe, CookingStep, RecipeImage, Ingredient, Like, Category}
 
   def create_recipe(attrs \\ %{}) do
     {:ok, recipe} =
@@ -69,7 +69,35 @@ defmodule Scratch.Recipes do
     |> Repo.preload([:cooking_steps, :ingredients, :recipe_images])
   end
 
+  def like_recipe(attrs) do
+    %Like{}
+    |> Like.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def unlike_recipe(recipe_like) do
+    Repo.delete(recipe_like)
+  end
+
+  def get_like_recipe(%{user_id: user_id, recipe_id: recipe_id}) do
+    Repo.get_by(Like, user_id: user_id, recipe_id: recipe_id)
+  end
+
   defp get_recipe_by_id(id) do
     Repo.get(Recipe, id)
+  end
+
+  def create_category(attrs) do
+    %Category{}
+    |> Category.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def get_categories(user_id) do
+    Repo.all(
+      from c in "categories",
+        where: c.user_id == ^user_id,
+        select: [:id, :title]
+    )
   end
 end
