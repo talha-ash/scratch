@@ -8,6 +8,7 @@ defmodule ScratchWeb.Types.RecipeType do
     field :create_recipe, :create_recipe_success do
       arg(:name, non_null(:string))
       arg(:serve_time, non_null(:integer))
+      arg(:category_id, :integer)
       arg(:nutrition_facts, non_null(list_of(:string)))
       arg(:cooking_steps, non_null(list_of(:cooking_step_input)))
       arg(:recipe_images, non_null(list_of(:recipe_image_input)))
@@ -19,6 +20,7 @@ defmodule ScratchWeb.Types.RecipeType do
     field :update_recipe, :create_recipe_success do
       arg(:id, non_null(:id))
       arg(:name, non_null(:string))
+      arg(:category_id, :integer)
       arg(:serve_time, non_null(:integer))
       arg(:nutrition_facts, non_null(list_of(:string)))
       resolve(&Recipe.update_recipe/3)
@@ -44,6 +46,18 @@ defmodule ScratchWeb.Types.RecipeType do
       arg(:cooking_steps, list_of(:cooking_step_input))
       resolve(&Recipe.update_recipe_cooking_steps/3)
     end
+
+    @desc "Like Recipe"
+    field :like_recipe, :like_recipe_success do
+      arg(:recipe_id, non_null(:id))
+      resolve(&Recipe.like_recipe/3)
+    end
+
+    @desc "Create Category"
+    field :create_category, :create_category_success do
+      arg(:title, non_null(:string))
+      resolve(&Recipe.create_category/3)
+    end
   end
 
   object :recipe_queries do
@@ -51,6 +65,11 @@ defmodule ScratchWeb.Types.RecipeType do
     field :get_recipe, :recipe do
       arg(:id, non_null(:id))
       resolve(&Recipe.get_recipe/3)
+    end
+
+    @desc "Get Categories"
+    field :categories, list_of(:category) do
+      resolve(&Recipe.get_categories/3)
     end
   end
 
@@ -77,6 +96,7 @@ defmodule ScratchWeb.Types.RecipeType do
     field :id, :integer
     field :name, :string
     field :serve_time, :integer
+    field :category_id, :integer
     field :nutrition_facts, :string
   end
 
@@ -93,6 +113,17 @@ defmodule ScratchWeb.Types.RecipeType do
   @desc "Update Recipe Images Successfull"
   object :update_recipe_images_success do
     field :recipe_images, list_of(:recipe_image)
+  end
+
+  @desc "Update Recipe Images Successfull"
+  object :like_recipe_success do
+    field :message, :string
+  end
+
+  @desc "Create Category Successfull"
+  object :create_category_success do
+    field :id, :integer
+    field :title, :string
   end
 
   # @desc "Update Recipe Images Successfull"
@@ -128,9 +159,15 @@ defmodule ScratchWeb.Types.RecipeType do
     field :id, :id
     field :name, :string
     field :serve_time, :integer
+    field :category_id, :integer
     field :nutrition_facts, :string
     field :ingredients, list_of(:ingredient)
     field :cooking_steps, list_of(:cooking_step)
     field :recipe_images, list_of(:recipe_image)
+  end
+
+  object :category do
+    field :id, :id
+    field :title, :string
   end
 end
