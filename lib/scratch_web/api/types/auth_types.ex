@@ -5,7 +5,7 @@ defmodule ScratchWeb.Types.AuthType do
 
   object :auth_mutations do
     @desc "Get Login"
-    field :login, :login_success do
+    field :login, :auth_success do
       arg(:username, :string)
       arg(:email, :string)
       arg(:password, non_null(:string))
@@ -13,7 +13,7 @@ defmodule ScratchWeb.Types.AuthType do
     end
 
     @desc "Get Register"
-    field :register, :login_success do
+    field :register, :auth_success do
       arg(:username, non_null(:string))
       arg(:email, non_null(:string))
       arg(:password_one, non_null(:string))
@@ -23,7 +23,7 @@ defmodule ScratchWeb.Types.AuthType do
   end
 
   @desc "Login Successfull"
-  object :login_success do
+  object :auth_success do
     field :id, :id
     field :token, :string
     field :user, :user

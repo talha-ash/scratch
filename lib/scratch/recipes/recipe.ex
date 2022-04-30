@@ -3,14 +3,16 @@ defmodule Scratch.Recipes.Recipe do
   import Ecto.Changeset
 
   alias Scratch.Accounts.User
-  alias Scratch.Recipes.{CookingStep, RecipeImage, Ingredient}
+  alias Scratch.Recipes.{CookingStep, RecipeImage, Ingredient, Category}
 
   schema "recipes" do
     field :name, :string
     field :serve_time, :integer
     field :nutrition_facts, {:array, :string}
 
+    belongs_to :category, Category, foreign_key: :category_id
     belongs_to :user, User, foreign_key: :user_id
+    # belongs_to :cookbook_categorie, User, foreign_key: :user_id
     has_many(:cooking_steps, CookingStep, on_replace: :delete)
     has_many(:recipe_images, RecipeImage, on_replace: :delete)
     has_many(:ingredients, Ingredient, on_replace: :delete)
@@ -18,7 +20,7 @@ defmodule Scratch.Recipes.Recipe do
   end
 
   @required ~w(name serve_time nutrition_facts user_id)a
-  @optional ~w()a
+  @optional ~w(category_id)a
   @allowed @required ++ @optional
 
   @doc false
