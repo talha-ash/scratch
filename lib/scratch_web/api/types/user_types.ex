@@ -13,11 +13,24 @@ defmodule ScratchWeb.Types.UserType do
     end
   end
 
+  object :user_mutations do
+    @desc "Follow User"
+    field :follow_user, :follow_user_success do
+      arg(:following_id, non_null(:id))
+      resolve(&Users.follow_user/2)
+    end
+  end
+
   @desc "A User"
   object :user do
     field :id, :id
     field :email, :string
     field :age, :string
     field :username, :string
+  end
+
+  @desc "Follow User Successfully"
+  object :follow_user_success do
+    field :message, :string
   end
 end

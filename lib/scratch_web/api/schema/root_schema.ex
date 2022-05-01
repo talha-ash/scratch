@@ -8,6 +8,7 @@ defmodule ScratchWeb.Schema do
   mutation do
     import_fields(:auth_mutations)
     import_fields(:recipe_mutations)
+    import_fields(:user_mutations)
   end
 
   query do
