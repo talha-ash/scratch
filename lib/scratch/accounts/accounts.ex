@@ -6,7 +6,7 @@ defmodule Scratch.Accounts do
   import Ecto.Query, warn: false
   alias Scratch.Repo
 
-  alias Scratch.Accounts.User
+  alias Scratch.Accounts.{User, UserFollowing}
   import Bcrypt, only: [verify_pass: 2, no_user_verify: 0]
 
   def list_users do
@@ -52,6 +52,27 @@ defmodule Scratch.Accounts do
     else
       {:error, message} ->
         {:error, message}
+    end
+  end
+
+  def follow_user(attrs) do
+    with true <- not_same_follower(attrs) do
+      %UserFollowing{}
+      |> UserFollowing.changeset(attrs)
+      |> Repo.insert()
+    else
+      _ ->
+        {:error, "Already Followed You"}
+    end
+  end
+
+  defp not_same_follower(%{follower_id: follower_id, following_id: following_id}) do
+    with nil <- Repo.get_by(UserFollowing, follower_id: following_id, following_id: follower_id),
+         false <- follower_id == following_id do
+      true
+    else
+      _ ->
+        false
     end
   end
 
