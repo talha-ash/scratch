@@ -3,7 +3,16 @@ defmodule Scratch.Recipes do
   import Ecto.Changeset
   import Ecto.Query
   alias Scratch.Repo
-  alias Scratch.Recipes.{Recipe, CookingStep, RecipeImage, Ingredient, Like, Category}
+
+  alias Scratch.Recipes.{
+    Recipe,
+    CookingStep,
+    RecipeImage,
+    Ingredient,
+    Like,
+    Category,
+    SavedRecipe
+  }
 
   def create_recipe(attrs \\ %{}) do
     {:ok, recipe} =
@@ -90,6 +99,12 @@ defmodule Scratch.Recipes do
   def create_category(attrs) do
     %Category{}
     |> Category.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def save_recipe_by_category(attrs) do
+    %SavedRecipe{}
+    |> SavedRecipe.changeset(attrs)
     |> Repo.insert()
   end
 

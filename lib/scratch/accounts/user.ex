@@ -12,6 +12,7 @@ defmodule Scratch.Accounts.User do
     field :roles, {:array, :string}, default: ["user"]
     field :password_one, :string, virtual: true
     field :password_two, :string, virtual: true
+    field :refresh_token, :string, load_in_query: true
     timestamps()
   end
 
@@ -23,6 +24,7 @@ defmodule Scratch.Accounts.User do
   @registration_optional ~w(age)a
   @registration_allowed @registration_required ++ @registration_optional
 
+  @refresh_token_required ~w(refresh_token)a
   @doc false
   def changeset(%__MODULE__{} = user, attrs) do
     user
@@ -45,6 +47,22 @@ defmodule Scratch.Accounts.User do
     |> unique_constraint(:username)
   end
 
+  @doc false
+  def refresh_token_changeset(%__MODULE__{} = user, attrs) do
+    user
+    |> cast(attrs, @refresh_token_required)
+    |> validate_required(@refresh_token_required)
+    |> validate_length(:refresh_token, min: 300)
+    |> validate_length(:refresh_token, max: 360)
+  end
+
+  def remove_refresh_token_changeset(%__MODULE__{} = user, attrs) do
+    user
+    |> cast(attrs, @refresh_token_required)
+    |> validate_length(:refresh_token, min: 0)
+    |> validate_length(:refresh_token, max: 0)
+  end
+
   defp compare_password(changeset) do
     cond do
       get_change(changeset, :password_one) == get_change(changeset, :password_two) ->
@@ -59,7 +77,7 @@ defmodule Scratch.Accounts.User do
     case changeset do
       %Ecto.Changeset{
         valid?: true,
-        changes: %{password_one: password_one, password_two: password_two}
+        changes: %{password_one: password_one}
       } ->
         changeset
         |> put_change(:password, hash_pwd_salt(password_one))

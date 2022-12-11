@@ -88,6 +88,18 @@ defmodule ScratchWeb.Resolvers.Recipe do
     end
   end
 
+  def save_recipe_by_category(_parent, args, %{context: %{current_user: current_user}}) do
+    args = Map.put(args, :user_id, current_user.id)
+
+    with {:ok, %Recipes.SavedRecipe{} = saved_recipe} <-
+           Recipes.save_recipe_by_category(args) do
+      {:ok, saved_recipe}
+    else
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
+
   def get_categories(_parent, args, %{context: %{current_user: current_user}}) do
     args = Map.put(args, :user_id, current_user.id)
 

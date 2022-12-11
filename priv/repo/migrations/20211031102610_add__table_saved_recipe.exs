@@ -8,5 +8,7 @@ defmodule Scratch.Repo.Migrations.AddTableSavedRecipe do
       add(:category_id, references("categories"))
       timestamps()
     end
+
+    create(unique_index(:saved_recipes, [:recipe_id, :category_id, :user_id]))
   end
 end

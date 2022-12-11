@@ -20,12 +20,27 @@ defmodule ScratchWeb.Types.AuthType do
       arg(:password_two, non_null(:string))
       resolve(&Auth.register/3)
     end
+
+    @desc "Get Refresh Token"
+    field :refresh_token, :refresh_token_success do
+      arg(:refresh_token, non_null(:string))
+      resolve(&Auth.refresh_token/3)
+    end
   end
 
-  @desc "Login Successfull"
+  @desc "Refresh Token Successfull"
+  object :refresh_token_success do
+    field :access_token, :string
+    field :refresh_token, :string
+    field :exp, :integer
+  end
+
+  @desc "Auth Successfull"
   object :auth_success do
     field :id, :id
-    field :token, :string
+    field :access_token, :string
+    field :refresh_token, :string
     field :user, :user
+    field :exp, :integer
   end
 end

@@ -66,6 +66,58 @@ defmodule Scratch.Accounts do
     end
   end
 
+  def verify_refresh_token(refresh_token) do
+    with {:ok, claims} <-
+           Scratch.Guardian.decode_and_verify(refresh_token, %{"typ" => "refresh"}),
+         {:ok, user} <- Scratch.Guardian.resource_from_claims(claims),
+         true <- is_user_refresh_token(user, refresh_token) do
+      {:ok, user}
+    else
+      {:error, %{user_id: user_id}} ->
+        {:error, %{user_id: user_id}}
+
+      {:error, message} ->
+        {:error, message}
+    end
+  end
+
+  def set_refresh_token(%{user_id: id, refresh_token: refresh_token}) do
+    with {:ok, %User{} = user} <- get_user_by_id(id) do
+      user
+      |> User.refresh_token_changeset(%{refresh_token: refresh_token})
+      |> Repo.update()
+    else
+      {:error, message} ->
+        {:error, message}
+    end
+  end
+
+  def set_refresh_token(%{user: user, refresh_token: refresh_token}) do
+    user
+    |> User.refresh_token_changeset(%{refresh_token: refresh_token})
+    |> Repo.update()
+  end
+
+  def remove_refresh_token(user_id) do
+    with {:ok, %User{} = user} <- get_user_by_id(user_id) do
+      user
+      |> User.remove_refresh_token_changeset(%{refresh_token: ""})
+      |> Repo.update()
+    else
+      {:error, message} ->
+        {:error, message}
+    end
+  end
+
+  defp is_user_refresh_token(user, refresh_token) do
+    with true <- user.refresh_token == refresh_token do
+      true
+    else
+      false ->
+        {:error, %{user_id: user.id}}
+    end
+  end
+
   defp not_same_follower(%{follower_id: follower_id, following_id: following_id}) do
     with nil <- Repo.get_by(UserFollowing, follower_id: following_id, following_id: follower_id),
          false <- follower_id == following_id do
@@ -81,9 +133,7 @@ defmodule Scratch.Accounts do
       {:ok, user}
     else
       _nil ->
-        no_user_verify()
-        message = "Email Not Found"
-        {:error, message}
+        on_user_not_found()
     end
   end
 
@@ -92,10 +142,23 @@ defmodule Scratch.Accounts do
       {:ok, user}
     else
       _nil ->
-        no_user_verify()
-        message = "Username Not Found"
-        {:error, message}
+        on_user_not_found()
     end
+  end
+
+  defp get_user_by_id(id) do
+    with %User{} = user <- Repo.get(User, id) do
+      {:ok, user}
+    else
+      _nil ->
+        on_user_not_found()
+    end
+  end
+
+  defp on_user_not_found() do
+    no_user_verify()
+    message = "User Not Found"
+    {:error, message}
   end
 
   defp match_password(%User{} = user, password) do
