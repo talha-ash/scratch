@@ -9,6 +9,8 @@ defmodule Scratch.Accounts do
   alias Scratch.Accounts.{User, UserFollowing}
   import Bcrypt, only: [verify_pass: 2, no_user_verify: 0]
 
+  @refresh_token_type "refresh"
+
   def list_users do
     Repo.all(User)
   end
@@ -68,7 +70,7 @@ defmodule Scratch.Accounts do
 
   def verify_refresh_token(refresh_token) do
     with {:ok, claims} <-
-           Scratch.Guardian.decode_and_verify(refresh_token, %{"typ" => "refresh"}),
+           Scratch.Guardian.decode_and_verify(refresh_token, %{"typ" => @refresh_token_type}),
          {:ok, user} <- Scratch.Guardian.resource_from_claims(claims),
          true <- is_user_refresh_token(user, refresh_token) do
       {:ok, user}

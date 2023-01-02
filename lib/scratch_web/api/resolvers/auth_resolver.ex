@@ -1,5 +1,9 @@
 defmodule ScratchWeb.Resolvers.Auth do
-  alias Scratch.Accounts
+  alias Scratch.{Accounts, Guardian}
+
+  @refresh_token_type "refresh"
+  @refresh_token_ttl 5
+  @access_token_ttl 1
 
   def login(_parent, args, _context) do
     with {:ok, %Accounts.User{} = user} <- Accounts.user_auth(args),
@@ -40,9 +44,12 @@ defmodule ScratchWeb.Resolvers.Auth do
 
   defp generate_tokens(user) do
     with {:ok, access_token, %{"exp" => exp}} <-
-           Scratch.Guardian.encode_and_sign(user, %{}, ttl: {1, :minute}),
+           Guardian.encode_and_sign(user, %{}, ttl: {@access_token_ttl, :minute}),
          {:ok, refresh_token, _claims} <-
-           Scratch.Guardian.encode_and_sign(user, %{}, token_type: "refresh", ttl: {5, :minute}) do
+           Guardian.encode_and_sign(user, %{},
+             token_type: @refresh_token_type,
+             ttl: {@refresh_token_ttl, :minute}
+           ) do
       {:ok, access_token, refresh_token, exp}
     else
       {:error, message} ->

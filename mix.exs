@@ -50,7 +50,8 @@ defmodule Scratch.MixProject do
       {:absinthe_plug, "~> 1.5"},
       {:crudry, "~> 2.4.0"},
       {:waffle, "~> 1.1"},
-      {:waffle_ecto, "~> 0.0"}
+      {:waffle_ecto, "~> 0.0"},
+      {:remote_ip, "~> 1.1"}
     ]
   end
 

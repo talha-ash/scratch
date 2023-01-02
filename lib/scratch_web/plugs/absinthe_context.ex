@@ -12,14 +12,14 @@ defmodule ScratchWeb.Context do
         put_private(conn, :absinthe, %{context: context})
 
       _ ->
-        conn
+        put_private(conn, :absinthe, %{context: %{remote_ip: conn.remote_ip}})
     end
   end
 
   defp build_context(conn) do
     with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
          {:ok, user} <- authorize(token) do
-      {:ok, %{current_user: user}}
+      {:ok, %{current_user: user, remote_ip: conn.remote_ip}}
     else
       _ -> %{}
     end
