@@ -48,7 +48,8 @@ defmodule ScratchWeb.AuthorizationMiddleware do
   defp match_non_user_action(action) do
     actions = [
       "login",
-      "register"
+      "register",
+      "refresh_token"
     ]
 
     Enum.any?(actions, fn a -> a == action end)

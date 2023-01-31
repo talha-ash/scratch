@@ -63,7 +63,7 @@ defmodule ScratchWeb.Resolvers.Recipe do
     args = Map.put(args, :user_id, current_user.id)
 
     with nil <- Recipes.get_like_recipe(args),
-         {:ok, %Recipes.Like{} = recipe} <-
+         {:ok, %Recipes.Like{} = _recipe} <-
            Recipes.like_recipe(args) do
       {:ok, %{message: "like successfully"}}
     else
@@ -88,8 +88,20 @@ defmodule ScratchWeb.Resolvers.Recipe do
     end
   end
 
-  def get_categories(_parent, args, %{context: %{current_user: current_user}}) do
+  def save_recipe_by_category(_parent, args, %{context: %{current_user: current_user}}) do
     args = Map.put(args, :user_id, current_user.id)
+
+    with {:ok, %Recipes.SavedRecipe{} = saved_recipe} <-
+           Recipes.save_recipe_by_category(args) do
+      {:ok, saved_recipe}
+    else
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
+
+  def get_categories(_parent, args, %{context: %{current_user: current_user}}) do
+    _args = Map.put(args, :user_id, current_user.id)
 
     {:ok, Recipes.get_categories(current_user.id)}
   end

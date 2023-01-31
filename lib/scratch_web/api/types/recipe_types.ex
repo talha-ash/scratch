@@ -58,6 +58,13 @@ defmodule ScratchWeb.Types.RecipeType do
       arg(:title, non_null(:string))
       resolve(&Recipe.create_category/3)
     end
+
+    @desc "Save Recipe"
+    field :save_recipe, :save_recipe_success do
+      arg(:recipe_id, non_null(:id))
+      arg(:category_id, non_null(:id))
+      resolve(&Recipe.save_recipe_by_category/3)
+    end
   end
 
   object :recipe_queries do
@@ -124,6 +131,14 @@ defmodule ScratchWeb.Types.RecipeType do
   object :create_category_success do
     field :id, :integer
     field :title, :string
+  end
+
+  @desc "Save Recipe By Category Successfull"
+  object :save_recipe_success do
+    field :id, :integer
+    field :user_id, :integer
+    field :recipe_id, :integer
+    field :category_id, :integer
   end
 
   # @desc "Update Recipe Images Successfull"
