@@ -25,6 +25,7 @@ defmodule Scratch.Accounts.User do
   @registration_allowed @registration_required ++ @registration_optional
 
   @refresh_token_required ~w(refresh_token)a
+
   @doc false
   def changeset(%__MODULE__{} = user, attrs) do
     user
