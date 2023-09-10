@@ -43,6 +43,7 @@ defmodule Scratch.MixProject do
       {:telemetry_metrics, "~> 0.6.1"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.22.1"},
+      {:finch, "~> 0.13"},
       {:jason, "~> 1.4"},
       {:plug_cowboy, "~> 2.6"},
       {:swoosh, "~> 1.10"},
