@@ -54,7 +54,8 @@ defmodule Scratch.MixProject do
       {:crudry, "~> 2.4.0"},
       {:waffle, "~> 1.1"},
       {:waffle_ecto, "~> 0.0.12"},
-      {:remote_ip, "~> 1.1"}
+      {:remote_ip, "~> 1.1"},
+      {:cors_plug, "~> 3.0"},
     ]
   end
 
