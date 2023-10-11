@@ -15,15 +15,20 @@ defmodule Scratch.Recipes do
   }
 
   def create_recipe(attrs \\ %{}) do
-    {:ok, recipe} =
+    recipe_changeset =
       %Recipe{}
       |> Recipe.changeset(attrs)
-      |> Repo.insert()
 
-    recipe
-    |> Repo.preload([:cooking_steps, :ingredients, :recipe_images, :user])
-    |> Recipe.associated_changeset(attrs)
-    |> Repo.insert_or_update()
+    case Repo.insert(recipe_changeset) do
+      {:ok, recipe} ->
+        recipe
+        |> Repo.preload([:cooking_steps, :ingredients, :recipe_images, :user])
+        |> Recipe.associated_changeset(attrs)
+        |> Repo.insert_or_update()
+
+      {:error, messeage} ->
+        {:error, messeage}
+    end
   end
 
   def update_recipe_images(id, recipe_images \\ %{}) do

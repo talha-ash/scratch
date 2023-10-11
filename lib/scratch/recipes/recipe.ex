@@ -19,21 +19,20 @@ defmodule Scratch.Recipes.Recipe do
     timestamps()
   end
 
-  @required ~w(name serve_time nutrition_facts user_id)a
-  @optional ~w(category_id)a
-  @allowed @required ++ @optional
+  @required ~w(name serve_time nutrition_facts user_id category_id)a
 
   @doc false
   def changeset(%__MODULE__{} = recipe, attrs) do
     recipe
-    |> cast(attrs, @allowed)
+    |> cast(attrs, @required)
     |> validate_required(@required)
     |> foreign_key_constraint(:user_id)
+    |> foreign_key_constraint(:category_id)
   end
 
   def associated_changeset(%__MODULE__{} = recipe, attrs) do
     recipe
-    |> cast(attrs, @allowed)
+    |> cast(attrs, @required)
     |> Ingredient.cast_assoc_with_recipe(recipe.id)
     |> CookingStep.cast_assoc_with_recipe(recipe.id)
     |> RecipeImage.cast_assoc_with_recipe(recipe.id)

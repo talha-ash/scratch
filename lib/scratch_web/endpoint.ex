@@ -17,7 +17,6 @@ defmodule ScratchWeb.Endpoint do
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
   plug CORSPlug
-
   plug RemoteIp
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -29,7 +28,7 @@ defmodule ScratchWeb.Endpoint do
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
-  plug Plug.Static, at: "/uploads", from: Path.expand('./uploads'), gzip: false
+  plug Plug.Static, at: "/uploads", from: Path.expand(~c"./uploads"), gzip: false
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -46,7 +45,8 @@ defmodule ScratchWeb.Endpoint do
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
-    parsers: [:urlencoded, {:multipart, length: 20_000_000}, :json],#20 MB
+    # 20 MB
+    parsers: [:urlencoded, {:multipart, length: 20_000_000}, :json],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 

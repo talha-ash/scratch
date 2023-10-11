@@ -9,6 +9,9 @@ defmodule ScratchWeb.Resolvers.Recipe do
     else
       {:error, changeset} ->
         {:error, changeset}
+
+      _ ->
+        {:error, %{message: "Something went wrong"}}
     end
   end
 

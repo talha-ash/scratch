@@ -1,19 +1,7 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     Scratch.Repo.insert!(%Scratch.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+defmodule Scratch.DatabaseSeed do
+  alias Scratch.Accounts
+  alias Scratch.Recipes
 
-alias Scratch.Accounts
-alias Scratch.Recipes
-
-defmodule SeedData do
   def add_initial_data() do
     {:ok, %Accounts.User{} = admin_user} =
       Accounts.create_user(%{
@@ -31,5 +19,3 @@ defmodule SeedData do
     Recipes.create_category(%{title: "Thai", user_id: admin_user.id})
   end
 end
-
-SeedData.add_initial_data()
