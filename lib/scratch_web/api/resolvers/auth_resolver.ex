@@ -2,8 +2,8 @@ defmodule ScratchWeb.Resolvers.Auth do
   alias Scratch.{Accounts, Guardian}
 
   @refresh_token_type "refresh"
-  @refresh_token_ttl 5
-  @access_token_ttl 1
+  @refresh_token_ttl 50
+  @access_token_ttl 20
 
   def login(_parent, args, _context) do
     with {:ok, %Accounts.User{} = user} <- Accounts.user_auth(args),
